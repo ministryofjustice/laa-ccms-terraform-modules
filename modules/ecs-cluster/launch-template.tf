@@ -47,7 +47,7 @@ resource "aws_launch_template" "ec2" {
   tag_specifications {
     resource_type = "instance"
     tags = merge(var.tags, {
-      Name = "${var.cluster_name}-${each.key}-instance"
+      Name = "${var.cluster_name}-${each.key}"
     })
   }
 

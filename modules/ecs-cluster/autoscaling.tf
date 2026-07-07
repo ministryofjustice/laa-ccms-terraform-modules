@@ -14,7 +14,7 @@ resource "aws_autoscaling_group" "ec2" {
 
   tag {
     key                 = "Name"
-    value               = "${var.cluster_name}-${each.key}-asg"
+    value               = "${var.cluster_name}-${each.key}"
     propagate_at_launch = true
   }
 
