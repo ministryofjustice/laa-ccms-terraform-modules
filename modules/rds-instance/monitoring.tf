@@ -44,7 +44,7 @@ resource "aws_db_event_subscription" "db" {
   sns_topic = aws_sns_topic.maintenance.arn
 
   source_type = "db-instance"
-  source_ids  = [aws_db_instance.db.id]
+  source_ids  = [var.name]
 
   event_categories = [
     "availability",
