@@ -8,6 +8,17 @@ resource "aws_ecs_task_definition" "service" {
   memory                   = var.memory
   container_definitions    = var.container_definitions
 
+  dynamic "volume" {
+    for_each = var.volumes
+    content {
+      name = volume.value.name
+      efs_volume_configuration {
+        file_system_id = volume.value.file_system_id
+        root_directory = volume.value.root_directory
+      }
+    }
+  }
+
   tags = merge(var.tags, { Name = var.name })
 }
 

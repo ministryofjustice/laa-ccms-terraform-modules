@@ -84,6 +84,16 @@ variable "load_balancer" {
   default = null
 }
 
+variable "volumes" {
+  description = "EFS volumes to mount in the task definition. Reference by name in the container definition's mountPoints."
+  type = list(object({
+    name           = string
+    file_system_id = string
+    root_directory = optional(string, "/")
+  }))
+  default = []
+}
+
 variable "tags" {
   description = "Tags to apply to all resources"
   type        = map(string)
