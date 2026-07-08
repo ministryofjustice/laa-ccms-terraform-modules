@@ -14,8 +14,9 @@ variable "engine_version" {
 }
 
 variable "major_engine_version" {
-  description = "Major engine version for the option group (e.g. '19' for Oracle SE2, '8.0' for MySQL)"
+  description = "Major engine version for the option group (e.g. '19' for Oracle SE2). Required when options are specified, otherwise omit."
   type        = string
+  default     = null
 }
 
 variable "instance_class" {

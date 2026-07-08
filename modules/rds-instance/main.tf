@@ -14,6 +14,13 @@ resource "aws_db_option_group" "db" {
   engine_name          = var.engine
   major_engine_version = var.major_engine_version
 
+  lifecycle {
+    precondition {
+      condition     = var.major_engine_version != null
+      error_message = "major_engine_version must be set when options are specified."
+    }
+  }
+
   dynamic "option" {
     for_each = var.options
     content {
