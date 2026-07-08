@@ -1,3 +1,6 @@
+data "aws_caller_identity" "current" {}
+data "aws_region" "current" {}
+
 resource "aws_cloudwatch_log_group" "db" {
   for_each = toset(var.cloudwatch_log_exports)
 
@@ -14,6 +17,25 @@ resource "aws_sns_topic" "maintenance" {
 
   tags = merge(var.tags, {
     Name = "${var.name}-rds-maintenance"
+  })
+}
+
+resource "aws_sns_topic_policy" "maintenance" {
+  arn = aws_sns_topic.maintenance.arn
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect    = "Allow"
+      Principal = { Service = "rds.amazonaws.com" }
+      Action    = "SNS:Publish"
+      Resource  = aws_sns_topic.maintenance.arn
+      Condition = {
+        ArnLike = {
+          "aws:SourceArn" = "arn:aws:rds:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:db:${var.name}"
+        }
+      }
+    }]
   })
 }
 
