@@ -53,6 +53,15 @@ variable "deregistration_delay" {
   default     = 30
 }
 
+variable "stickiness" {
+  description = "Session stickiness configuration for the target group"
+  type = object({
+    enabled  = optional(bool, false)
+    duration = optional(number, 3600)
+  })
+  default = {}
+}
+
 variable "tags" {
   description = "Tags to apply to all resources"
   type        = map(string)

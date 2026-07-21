@@ -31,6 +31,15 @@ resource "aws_lb_target_group" "alb" {
     protocol            = "HTTP"
   }
 
+  dynamic "stickiness" {
+    for_each = var.stickiness.enabled ? [1] : []
+    content {
+      type            = "lb_cookie"
+      cookie_duration = var.stickiness.duration
+      enabled         = true
+    }
+  }
+
   tags = merge(var.tags, {
     Name = "${var.name}-tg"
   })
