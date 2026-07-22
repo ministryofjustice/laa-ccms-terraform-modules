@@ -17,3 +17,8 @@ output "instance_profile_name" {
   description = "Name of the IAM instance profile attached to the instance"
   value       = local.create_iam ? aws_iam_instance_profile.ec2[0].name : var.instance_profile_name
 }
+
+output "private_ip" {
+  description = "Private IP address of the EC2 instance"
+  value       = aws_instance.ec2.private_ip
+}
