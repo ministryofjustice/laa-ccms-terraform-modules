@@ -44,44 +44,45 @@ resource "aws_wafv2_web_acl" "waf" {
     }
   }
 
-  # Always-on: AWS Managed Common Rule Set with overrides for rules that
-  # produce false positives on application payloads
-  rule {
-    name     = "AWSManagedRulesCommonRuleSet"
-    priority = 20
+  dynamic "rule" {
+    for_each = var.enable_managed_rules ? [1] : []
+    content {
+      name     = "AWSManagedRulesCommonRuleSet"
+      priority = 20
 
-    override_action {
-      none {}
-    }
+      override_action {
+        none {}
+      }
 
-    statement {
-      managed_rule_group_statement {
-        name        = "AWSManagedRulesCommonRuleSet"
-        vendor_name = "AWS"
+      statement {
+        managed_rule_group_statement {
+          name        = "AWSManagedRulesCommonRuleSet"
+          vendor_name = "AWS"
 
-        dynamic "rule_action_override" {
-          for_each = var.managed_rule_overrides
-          content {
-            name = rule_action_override.value.name
-            action_to_use {
-              dynamic "count" {
-                for_each = rule_action_override.value.action == "count" ? [1] : []
-                content {}
-              }
-              dynamic "allow" {
-                for_each = rule_action_override.value.action == "allow" ? [1] : []
-                content {}
+          dynamic "rule_action_override" {
+            for_each = var.managed_rule_overrides
+            content {
+              name = rule_action_override.value.name
+              action_to_use {
+                dynamic "count" {
+                  for_each = rule_action_override.value.action == "count" ? [1] : []
+                  content {}
+                }
+                dynamic "allow" {
+                  for_each = rule_action_override.value.action == "allow" ? [1] : []
+                  content {}
+                }
               }
             }
           }
         }
       }
-    }
 
-    visibility_config {
-      cloudwatch_metrics_enabled = true
-      metric_name                = "${var.name}-common-rules"
-      sampled_requests_enabled   = true
+      visibility_config {
+        cloudwatch_metrics_enabled = true
+        metric_name                = "${var.name}-common-rules"
+        sampled_requests_enabled   = true
+      }
     }
   }
 

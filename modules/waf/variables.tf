@@ -29,6 +29,12 @@ variable "log_retention_days" {
   default     = 180
 }
 
+variable "enable_managed_rules" {
+  description = "Whether to include the AWS Managed Common Rule Set"
+  type        = bool
+  default     = true
+}
+
 variable "tags" {
   description = "Tags to apply to all resources"
   type        = map(string)
