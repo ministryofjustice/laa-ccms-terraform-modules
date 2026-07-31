@@ -76,6 +76,21 @@ variable "cpu_threads_per_core" {
   default     = 2
 }
 
+variable "ebs_block_devices" {
+  description = "AMI-baked EBS block devices to manage via Terraform (resize, re-type, etc.). Each entry maps to an ebs_block_device block on the instance."
+  type = list(object({
+    device_name           = string
+    volume_size           = optional(number)
+    volume_type           = optional(string)
+    iops                  = optional(number)
+    throughput            = optional(number)
+    encrypted             = optional(bool)
+    kms_key_id            = optional(string)
+    delete_on_termination = optional(bool, true)
+  }))
+  default = []
+}
+
 variable "tags" {
   description = "Tags to apply to all resources"
   type        = map(string)
