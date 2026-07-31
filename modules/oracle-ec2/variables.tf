@@ -76,10 +76,19 @@ variable "cpu_threads_per_core" {
   default     = 2
 }
 
-variable "no_device_names" {
-  description = "Device names from the AMI block device mapping to suppress at launch (e.g. [\"/dev/sdb\"]). Suppressing a device lets Terraform attach its own managed EBS volume at that path, keeping volume lifecycle separate from the instance."
-  type        = list(string)
-  default     = []
+variable "ebs_block_devices" {
+  description = "EBS block devices baked into the AMI that Terraform should manage (resize, re-type, etc.). Each entry overrides the corresponding AMI block device mapping; AWS preserves the AMI snapshot data automatically."
+  type = list(object({
+    device_name           = string
+    volume_size           = optional(number)
+    volume_type           = optional(string)
+    iops                  = optional(number)
+    throughput            = optional(number)
+    encrypted             = optional(bool)
+    kms_key_id            = optional(string)
+    delete_on_termination = optional(bool, true)
+  }))
+  default = []
 }
 
 variable "tags" {
