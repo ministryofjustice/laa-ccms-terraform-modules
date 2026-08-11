@@ -45,6 +45,16 @@ variable "network_mode" {
   default     = "bridge"
 }
 
+variable "network_configuration" {
+  description = "Required when network_mode is awsvpc: subnets/security groups for task ENIs. Leave null for bridge mode."
+  type = object({
+    subnets          = list(string)
+    security_groups  = list(string)
+    assign_public_ip = optional(bool, false)
+  })
+  default = null
+}
+
 variable "health_check_grace_period_seconds" {
   description = "Seconds to ignore failing load balancer health checks after a task starts. Only applies when load_balancer is set."
   type        = number
