@@ -14,8 +14,9 @@ variable "instance_type" {
 }
 
 variable "key_name" {
-  description = "Name of the EC2 key pair to associate with the instance"
+  description = "Name of the EC2 key pair to associate with the instance. Leave unset for SSM-only access."
   type        = string
+  default     = null
 }
 
 variable "subnet_id" {
