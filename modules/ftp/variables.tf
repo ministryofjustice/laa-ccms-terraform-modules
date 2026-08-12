@@ -61,3 +61,9 @@ variable "enabled_cron_in_environments" {
   type        = list(string)
   default     = ["development", "test", "perproduction"]
 }
+
+variable "tags" {
+  description = "Tags to apply to resources created by this module"
+  type        = map(string)
+  default     = {}
+}
