@@ -34,6 +34,23 @@ variable "target_type" {
   default     = "ip"
 }
 
+variable "target_group_protocol" {
+  description = "Protocol used from the NLB to the target. \"TCP\" for a plaintext backend, \"TLS\" for backend re-encryption (end-to-end TLS, terminated by the target itself). Also used for the direct target_port listener."
+  type        = string
+  default     = "TCP"
+
+  validation {
+    condition     = contains(["TCP", "TLS"], var.target_group_protocol)
+    error_message = "target_group_protocol must be \"TCP\" or \"TLS\"."
+  }
+}
+
+variable "enable_port_80_listener" {
+  description = "Whether to create the plaintext port-80 listener. Set to false for backends that no longer accept unencrypted traffic."
+  type        = bool
+  default     = true
+}
+
 variable "health_check" {
   description = "Health check configuration for the target group"
   type = object({
