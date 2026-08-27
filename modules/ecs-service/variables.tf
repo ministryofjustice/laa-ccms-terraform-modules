@@ -104,6 +104,15 @@ variable "volumes" {
   default = []
 }
 
+variable "host_volumes" {
+  description = "Host-path volumes (bind mounts from the container instance's filesystem) to mount in the task definition. Reference by name in the container definition's mountPoints."
+  type = list(object({
+    name      = string
+    host_path = string
+  }))
+  default = []
+}
+
 variable "tags" {
   description = "Tags to apply to all resources"
   type        = map(string)
