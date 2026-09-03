@@ -76,8 +76,6 @@ resource "aws_lb_listener" "tls443" {
   })
 }
 
-# Direct passthrough on the app's own server port. TLS-terminated (re-encrypting
-# to the target) when target_group_protocol is "TLS", otherwise plain TCP.
 resource "aws_lb_listener" "target_port" {
   load_balancer_arn = aws_lb.nlb.arn
   port              = var.target_port
