@@ -24,8 +24,14 @@ variable "certificate_arn" {
 }
 
 variable "target_port" {
-  description = "Port the target instances listen on"
+  description = "Port the target instances/IPs listen on"
   type        = number
+}
+
+variable "target_type" {
+  description = "Target group target type. Use \"ip\" for awsvpc-mode ECS tasks, \"instance\" for bridge-mode"
+  type        = string
+  default     = "instance"
 }
 
 variable "health_check" {
