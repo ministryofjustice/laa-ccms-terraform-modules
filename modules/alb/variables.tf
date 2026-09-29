@@ -68,6 +68,16 @@ variable "stickiness" {
   default = {}
 }
 
+variable "access_logs" {
+  description = "Access log delivery for the ALB. The bucket policy must allow ELB log delivery. Null disables access logging."
+  type = object({
+    bucket  = string
+    prefix  = optional(string)
+    enabled = optional(bool, true)
+  })
+  default = null
+}
+
 variable "tags" {
   description = "Tags to apply to all resources"
   type        = map(string)

@@ -7,6 +7,15 @@ resource "aws_lb" "nlb" {
 
   enable_deletion_protection = var.enable_deletion_protection
 
+  dynamic "access_logs" {
+    for_each = var.access_logs == null ? [] : [var.access_logs]
+    content {
+      bucket  = access_logs.value.bucket
+      prefix  = access_logs.value.prefix
+      enabled = access_logs.value.enabled
+    }
+  }
+
   tags = merge(var.tags, {
     Name = "${var.name}-nlb"
   })
