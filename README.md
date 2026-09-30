@@ -6,6 +6,7 @@ Reusable Terraform modules for CCMS (Client and Cost Management System) infrastr
 
 | Module | Description |
 |---|---|
+| [alerting](modules/alerting) | Account alerts topic (KMS-encrypted), GuardDuty and ACM expiry rules, and a Slack notifier Lambda with dead-letter queue |
 | [alb](modules/alb) | Internal Application Load Balancer with HTTPS listener and target group |
 | [athena](modules/athena) | Athena workgroup, database and partition-projected tables over an existing ALB/NLB access logs bucket |
 | [ec2](modules/ec2) | Single EC2 instance with an IAM instance role/profile |
