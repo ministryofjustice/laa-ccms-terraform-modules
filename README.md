@@ -7,6 +7,7 @@ Reusable Terraform modules for CCMS (Client and Cost Management System) infrastr
 | Module | Description |
 |---|---|
 | [alb](modules/alb) | Internal Application Load Balancer with HTTPS listener and target group |
+| [athena-lb-logs](modules/athena-lb-logs) | Athena workgroup, database and partition-projected tables over an existing ALB/NLB access logs bucket |
 | [ec2](modules/ec2) | Single EC2 instance with an IAM instance role/profile |
 | [ecs-cluster](modules/ecs-cluster) | ECS cluster backed by one or more EC2 Auto Scaling capacity providers |
 | [ecs-service](modules/ecs-service) | ECS task definition and service, with optional EFS and host-path volumes |
