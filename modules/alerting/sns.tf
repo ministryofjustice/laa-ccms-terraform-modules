@@ -1,5 +1,4 @@
-# Single alerts topic for the account. CloudWatch alarms and the EventBridge rules publish here, and the
-# Slack notifier routes each message to a channel by its source (GuardDuty, S3, ACM or CloudWatch).
+
 resource "aws_sns_topic" "alerts" {
   name              = "${var.name}-alerts"
   kms_master_key_id = aws_kms_key.alerts.arn

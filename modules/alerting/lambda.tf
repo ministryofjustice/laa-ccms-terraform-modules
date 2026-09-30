@@ -1,13 +1,9 @@
 # Slack notifier: posts alerts from the alerts topic to Slack. Source is in lambda/slack_notifier
-# (copied from ccms-ebs cloudwatch-slack-integration-v2). It only needs the Python standard library and boto3,
-# both provided by the Lambda runtime, so there is no layer.
 
 locals {
   slack_notifier_name = "${var.name}-slack-notifier"
 }
 
-# Slack incoming webhook URLs, one per channel. Created with empty values; populate in the console after the
-# first apply. The notifier fails until all three keys are set.
 resource "aws_secretsmanager_secret" "slack_webhooks" {
   name        = "${var.name}-slack-webhooks"
   description = "Slack webhook URLs for ${var.name} alerts: slack_channel_webhook (CloudWatch/ACM), slack_channel_webhook_guardduty, slack_channel_webhook_s3"
