@@ -101,12 +101,12 @@ locals {
   }
 }
 
-resource "aws_glue_catalog_database" "this" {
+resource "aws_glue_catalog_database" "athena" {
   name        = replace("${var.name}_lb_access_logs", "-", "_")
   description = "Access logs for the ${var.name} load balancers"
 }
 
-resource "aws_athena_workgroup" "this" {
+resource "aws_athena_workgroup" "athena" {
   name          = "${var.name}-lb-access-logs"
   force_destroy = true
 
@@ -127,11 +127,11 @@ resource "aws_athena_workgroup" "this" {
   })
 }
 
-resource "aws_glue_catalog_table" "this" {
+resource "aws_glue_catalog_table" "athena" {
   for_each = { for k, t in local.tables : k => t if length(t.prefixes) > 0 }
 
   name          = each.value.name
-  database_name = aws_glue_catalog_database.this.name
+  database_name = aws_glue_catalog_database.athena.name
   table_type    = "EXTERNAL_TABLE"
 
   parameters = merge(local.projection_parameters, {
@@ -230,12 +230,12 @@ locals {
   }
 }
 
-resource "aws_athena_named_query" "this" {
+resource "aws_athena_named_query" "athena" {
   for_each = { for k, q in local.named_queries : k => q if length(local.tables[q.table].prefixes) > 0 }
 
   name        = each.value.name
   description = each.value.description
-  workgroup   = aws_athena_workgroup.this.id
-  database    = aws_glue_catalog_database.this.name
+  workgroup   = aws_athena_workgroup.athena.id
+  database    = aws_glue_catalog_database.athena.name
   query       = each.value.query
 }
