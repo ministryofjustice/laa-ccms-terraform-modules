@@ -83,3 +83,13 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "alarms" {
+  description = "CloudWatch alarms for the ALB, sent to topic_arn on alarm and on recovery. Null creates no alarms. Thresholds default to the values used by the original CCMS stacks."
+  type = object({
+    topic_arn         = string
+    min_healthy_hosts = optional(number, 1)  # alarm when fewer healthy targets than this
+    max_5xx_count     = optional(number, 10) # alarm when more ELB 5XX responses than this per minute, 3 minutes running
+  })
+  default = null
+}

@@ -118,3 +118,13 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "alarms" {
+  description = "CloudWatch alarms for the service, sent to topic_arn on alarm and on recovery. Null creates no alarms. Thresholds default to the values used by the original CCMS stacks. The running-task alarm needs Container Insights on the cluster (enabled by the ecs-cluster module) and is skipped when desired_count is 0."
+  type = object({
+    topic_arn                = string
+    cpu_threshold_percent    = optional(number, 85) # alarm when service CPU is at or above this for 5 minutes
+    memory_threshold_percent = optional(number, 95) # alarm when service memory is above this for 5 minutes
+  })
+  default = null
+}

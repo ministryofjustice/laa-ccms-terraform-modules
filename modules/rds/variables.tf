@@ -151,3 +151,14 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "alarms" {
+  description = "CloudWatch alarms for the instance, sent to topic_arn on alarm and on recovery. Null creates no alarms. Thresholds default to the values used by the original CCMS stacks."
+  type = object({
+    topic_arn                 = string
+    cpu_threshold_percent     = optional(number, 80)        # alarm when CPU is above this for 5 minutes
+    free_storage_percent      = optional(number, 20)        # alarm when free storage drops below this % of allocated_storage
+    freeable_memory_threshold = optional(number, 200000000) # bytes (~200MB); alarm when freeable memory drops below this for 5 minutes
+  })
+  default = null
+}
