@@ -2,7 +2,7 @@ data "aws_caller_identity" "current" {}
 
 data "aws_region" "current" {}
 
-# Encrypts the alert topics. CloudWatch alarms and EventBridge need to use the key to publish to them.
+# Encrypts the alert topics. CloudWatch alarms, EventBridge and RDS event subscriptions need to use the key to publish to them.
 resource "aws_kms_key" "alerts" {
   description             = "${var.name} alerts SNS topic encryption"
   enable_key_rotation     = true
@@ -39,7 +39,7 @@ data "aws_iam_policy_document" "alerts_kms" {
     resources = ["*"]
     principals {
       type        = "Service"
-      identifiers = ["cloudwatch.amazonaws.com", "events.amazonaws.com"]
+      identifiers = ["cloudwatch.amazonaws.com", "events.amazonaws.com", "events.rds.amazonaws.com"]
     }
   }
 }

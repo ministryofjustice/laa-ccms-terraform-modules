@@ -31,3 +31,11 @@ variable "capacity_providers" {
     user_data             = optional(string, null)
   }))
 }
+
+variable "alarms" {
+  description = "CloudWatch alarms for the cluster's EC2 instances (one per capacity provider), sent to topic_arn on alarm and on recovery. Null creates no alarms."
+  type = object({
+    topic_arn = string
+  })
+  default = null
+}

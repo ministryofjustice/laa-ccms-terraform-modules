@@ -32,7 +32,7 @@ data "aws_iam_policy_document" "alerts_topic" {
     resources = [aws_sns_topic.alerts.arn]
     principals {
       type        = "Service"
-      identifiers = ["cloudwatch.amazonaws.com", "events.amazonaws.com"]
+      identifiers = ["cloudwatch.amazonaws.com", "events.amazonaws.com", "events.rds.amazonaws.com"]
     }
     condition {
       test     = "StringEquals"

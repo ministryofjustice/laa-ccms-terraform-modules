@@ -23,3 +23,12 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "alarms" {
+  description = "CloudWatch alarms for the file system, sent to topic_arn on alarm and on recovery. Null creates no alarms. Thresholds default to the values used by the original CCMS stacks."
+  type = object({
+    topic_arn                = string
+    min_burst_credit_balance = optional(number, 10737418240) # bytes (10GiB); alarm when burst credits drop below this
+  })
+  default = null
+}

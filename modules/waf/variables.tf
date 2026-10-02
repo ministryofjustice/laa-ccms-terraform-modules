@@ -40,3 +40,12 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "alarms" {
+  description = "CloudWatch alarms for the web ACL, sent to topic_arn on alarm and on recovery. Null creates no alarms. Thresholds default to the values used by the original CCMS stacks."
+  type = object({
+    topic_arn            = string
+    max_blocked_requests = optional(number, 50) # alarm when more requests than this are blocked a minute, 5 minutes running
+  })
+  default = null
+}

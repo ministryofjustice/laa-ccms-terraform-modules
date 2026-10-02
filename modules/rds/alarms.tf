@@ -73,3 +73,20 @@ resource "aws_cloudwatch_metric_alarm" "freeable_memory_low" {
 
   tags = var.tags
 }
+
+# RDS events (failover, failure, maintenance etc.) also go to the alerts topic, so they reach Slack.
+# The topic must allow events.rds.amazonaws.com to publish (the alerting module does).
+resource "aws_db_event_subscription" "alerts" {
+  count = var.alarms == null ? 0 : 1
+
+  name      = "${var.name}-rds-alerts"
+  sns_topic = var.alarms.topic_arn
+
+  source_type      = "db-instance"
+  source_ids       = [aws_db_instance.db.identifier]
+  event_categories = aws_db_event_subscription.db.event_categories
+
+  tags = merge(var.tags, {
+    Name = "${var.name}-rds-alerts"
+  })
+}

@@ -82,3 +82,11 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "alarms" {
+  description = "CloudWatch alarms for the instance, sent to topic_arn on alarm and on recovery. Null creates no alarms."
+  type = object({
+    topic_arn = string
+  })
+  default = null
+}
