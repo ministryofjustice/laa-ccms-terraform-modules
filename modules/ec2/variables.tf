@@ -84,9 +84,11 @@ variable "tags" {
 }
 
 variable "alarms" {
-  description = "CloudWatch alarms for the instance, sent to topic_arn on alarm and on recovery. Null creates no alarms."
+  description = "CloudWatch alarms for the instance, sent to topic_arn on alarm and on recovery. Null creates no alarms. disk_paths alarms need the CloudWatch agent (cloudwatch-agent module) publishing disk_used_percent with InstanceId + path aggregation."
   type = object({
-    topic_arn = string
+    topic_arn                   = string
+    disk_paths                  = optional(list(string), []) # mount points to alarm on, e.g. ["/", "/u01"]
+    disk_used_threshold_percent = optional(number, 80)       # alarm when a disk is at or above this % used for 2 minutes
   })
   default = null
 }

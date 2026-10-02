@@ -9,6 +9,7 @@ Reusable Terraform modules for CCMS (Client and Cost Management System) infrastr
 | [alerting](modules/alerting) | Account alerts topic (KMS-encrypted), GuardDuty and ACM expiry rules, and a Slack notifier Lambda with dead-letter queue |
 | [alb](modules/alb) | Internal Application Load Balancer with HTTPS listener and target group |
 | [athena](modules/athena) | Athena workgroup, database and partition-projected tables over an existing ALB/NLB access logs bucket |
+| [cloudwatch-agent](modules/cloudwatch-agent) | Installs and configures the CloudWatch agent on running instances via an SSM association, with its config parameter and log groups |
 | [ec2](modules/ec2) | Single EC2 instance with an IAM instance role/profile |
 | [ecs-cluster](modules/ecs-cluster) | ECS cluster backed by one or more EC2 Auto Scaling capacity providers |
 | [ecs-service](modules/ecs-service) | ECS task definition and service, with optional EFS and host-path volumes |

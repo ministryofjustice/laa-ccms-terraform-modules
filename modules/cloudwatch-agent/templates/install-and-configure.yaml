@@ -1,0 +1,31 @@
+---
+schemaVersion: "2.2"
+description: Installs the CloudWatch agent and configures it from an SSM parameter.
+parameters:
+  configParameterName:
+    description: Name of the SSM parameter holding the CloudWatch agent config.
+    type: String
+  configHash:
+    description: Hash of the config. Not used by the steps; changing it makes the association re-run and pick up new config.
+    type: String
+    default: ""
+mainSteps:
+  - name: installCloudWatchAgent
+    action: aws:runDocument
+    inputs:
+      documentType: SSMDocument
+      documentPath: AWS-ConfigureAWSPackage
+      documentParameters:
+        action: Install
+        name: AmazonCloudWatchAgent
+  - name: configureCloudWatchAgent
+    action: aws:runDocument
+    inputs:
+      documentType: SSMDocument
+      documentPath: AmazonCloudWatch-ManageAgent
+      documentParameters:
+        action: configure
+        mode: ec2
+        optionalConfigurationSource: ssm
+        optionalConfigurationLocation: "{{ configParameterName }}"
+        optionalRestart: "yes"
