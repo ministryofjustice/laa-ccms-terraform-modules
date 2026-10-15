@@ -72,7 +72,7 @@ resource "aws_lb_listener" "tls443" {
   load_balancer_arn = aws_lb.nlb.arn
   port              = 443
   protocol          = "TLS"
-  ssl_policy        = "ELBSecurityPolicy-TLS13-1-2-2021-06"
+  ssl_policy        = var.ssl_policy
   certificate_arn   = var.certificate_arn
 
   default_action {
@@ -89,7 +89,7 @@ resource "aws_lb_listener" "target_port" {
   load_balancer_arn = aws_lb.nlb.arn
   port              = var.target_port
   protocol          = var.target_group_protocol
-  ssl_policy        = var.target_group_protocol == "TLS" ? "ELBSecurityPolicy-TLS13-1-2-2021-06" : null
+  ssl_policy        = var.target_group_protocol == "TLS" ? var.ssl_policy : null
   certificate_arn   = var.target_group_protocol == "TLS" ? var.certificate_arn : null
 
   default_action {

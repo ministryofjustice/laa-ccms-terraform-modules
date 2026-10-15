@@ -23,6 +23,12 @@ variable "certificate_arn" {
   type        = string
 }
 
+variable "ssl_policy" {
+  description = "ELB security policy for the TLS listeners (443 and, when target_group_protocol is \"TLS\", target_port)"
+  type        = string
+  default     = "ELBSecurityPolicy-TLS13-1-2-2021-06"
+}
+
 variable "target_port" {
   description = "Port the target instances/IPs listen on. Also used as the port for the third (passthrough) listener"
   type        = number
