@@ -77,6 +77,17 @@ variable "cpu_threads_per_core" {
   default     = 2
 }
 
+variable "root_volume" {
+  description = "Root EBS volume settings. Null keeps the AMI's default root volume."
+  type = object({
+    size      = number
+    type      = optional(string, "gp3")
+    iops      = optional(number, 3000)
+    encrypted = optional(bool) # changing this on an existing volume replaces the instance
+  })
+  default = null
+}
+
 variable "tags" {
   description = "Tags to apply to all resources"
   type        = map(string)

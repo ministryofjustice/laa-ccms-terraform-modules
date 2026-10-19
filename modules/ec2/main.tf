@@ -25,6 +25,19 @@ resource "aws_instance" "ec2" {
     }
   }
 
+  dynamic "root_block_device" {
+    for_each = var.root_volume != null ? [1] : []
+    content {
+      volume_type = var.root_volume.type
+      volume_size = var.root_volume.size
+      iops        = var.root_volume.iops
+      encrypted   = var.root_volume.encrypted
+      tags = merge(var.tags, {
+        Name = "${var.name}-root"
+      })
+    }
+  }
+
   lifecycle {
     ignore_changes = [
       ebs_block_device,
