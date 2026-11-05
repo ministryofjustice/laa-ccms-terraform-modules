@@ -19,6 +19,78 @@ resource "aws_wafv2_web_acl" "waf" {
     block {}
   }
 
+  # Block listed URI paths for everyone, before the IP allowlist can allow them
+  dynamic "rule" {
+    for_each = length(var.blocked_uri_paths) > 0 ? [1] : []
+    content {
+      name     = "BlockedURIPaths"
+      priority = 5
+
+      action {
+        block {}
+      }
+
+      statement {
+        dynamic "or_statement" {
+          for_each = length(var.blocked_uri_paths) > 1 ? [1] : []
+          content {
+            dynamic "statement" {
+              for_each = var.blocked_uri_paths
+              content {
+                byte_match_statement {
+                  search_string         = lower(statement.value)
+                  positional_constraint = "CONTAINS"
+
+                  field_to_match {
+                    uri_path {}
+                  }
+
+                  text_transformation {
+                    priority = 0
+                    type     = "URL_DECODE"
+                  }
+
+                  text_transformation {
+                    priority = 1
+                    type     = "LOWERCASE"
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        dynamic "byte_match_statement" {
+          for_each = length(var.blocked_uri_paths) == 1 ? var.blocked_uri_paths : []
+          content {
+            search_string         = lower(byte_match_statement.value)
+            positional_constraint = "CONTAINS"
+
+            field_to_match {
+              uri_path {}
+            }
+
+            text_transformation {
+              priority = 0
+              type     = "URL_DECODE"
+            }
+
+            text_transformation {
+              priority = 1
+              type     = "LOWERCASE"
+            }
+          }
+        }
+      }
+
+      visibility_config {
+        cloudwatch_metrics_enabled = true
+        metric_name                = "${var.name}-blocked-uri-paths"
+        sampled_requests_enabled   = true
+      }
+    }
+  }
+
   # Always-on: allow trusted IPs before managed rules run
   dynamic "rule" {
     for_each = length(var.ip_allowlist) > 0 ? [1] : []

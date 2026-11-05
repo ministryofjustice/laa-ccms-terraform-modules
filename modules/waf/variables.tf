@@ -14,6 +14,12 @@ variable "ip_allowlist" {
   default     = []
 }
 
+variable "blocked_uri_paths" {
+  description = "URI path fragments to always block, evaluated before the IP allowlist. Matched case-insensitively after URL decoding (e.g. \"/oa_html/appstcfserver\")."
+  type        = list(string)
+  default     = []
+}
+
 variable "managed_rule_overrides" {
   description = "Rule action overrides for the AWS Managed Common Rule Set. Leave empty to use all rules at their default action."
   type = list(object({
