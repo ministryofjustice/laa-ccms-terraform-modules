@@ -34,8 +34,25 @@ variable "target_type" {
   default     = "instance"
 }
 
+variable "target_protocol" {
+  description = "Protocol the ALB uses to reach the targets. Use \"HTTPS\" when the application terminates TLS itself (e.g. WebLogic on its SSL port)."
+  type        = string
+  default     = "HTTP"
+
+  validation {
+    condition     = contains(["HTTP", "HTTPS"], var.target_protocol)
+    error_message = "target_protocol must be HTTP or HTTPS."
+  }
+}
+
+variable "target_group_name" {
+  description = "Override for the target group name (max 32 characters). Defaults to \"<name>-tg\". Changing target_type or target_protocol replaces the target group, and as the target group is create_before_destroy the replacement needs a new name."
+  type        = string
+  default     = null
+}
+
 variable "health_check" {
-  description = "Health check configuration for the target group"
+  description = "Health check configuration for the target group. protocol defaults to target_protocol; port defaults to the traffic port."
   type = object({
     path                = optional(string, "/health")
     matcher             = optional(string, "200")
@@ -43,6 +60,8 @@ variable "health_check" {
     unhealthy_threshold = optional(number, 2)
     interval            = optional(number, 120)
     timeout             = optional(number, 5)
+    port                = optional(string, "traffic-port")
+    protocol            = optional(string)
   })
   default = {}
 }

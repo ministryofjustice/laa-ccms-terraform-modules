@@ -23,9 +23,9 @@ resource "aws_lb" "alb" {
 }
 
 resource "aws_lb_target_group" "alb" {
-  name                 = "${var.name}-tg"
+  name                 = coalesce(var.target_group_name, "${var.name}-tg")
   port                 = var.target_port
-  protocol             = "HTTP"
+  protocol             = var.target_protocol
   vpc_id               = var.vpc_id
   target_type          = var.target_type
   deregistration_delay = var.deregistration_delay
@@ -37,7 +37,8 @@ resource "aws_lb_target_group" "alb" {
     unhealthy_threshold = var.health_check.unhealthy_threshold
     interval            = var.health_check.interval
     timeout             = var.health_check.timeout
-    protocol            = "HTTP"
+    port                = var.health_check.port
+    protocol            = coalesce(var.health_check.protocol, var.target_protocol)
   }
 
   dynamic "stickiness" {
@@ -50,7 +51,7 @@ resource "aws_lb_target_group" "alb" {
   }
 
   tags = merge(var.tags, {
-    Name = "${var.name}-tg"
+    Name = coalesce(var.target_group_name, "${var.name}-tg")
   })
 
   lifecycle {
