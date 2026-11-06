@@ -15,6 +15,10 @@ variable "capacity_providers" {
     Use a single key (e.g. "default") for most apps. SOA uses two keys ("admin" and "managed").
 
     user_data should be base64-encoded. If omitted, a minimal ECS config is generated automatically.
+
+    managed_scaling lets ECS scale the ASG between min_size and max_size, so a rolling deployment can place the new
+    task revision alongside the old one. It also enables managed termination protection, and desired_capacity is then
+    ignored. Services only use it when they set capacity_provider_strategy on the ecs-service module.
   EOT
   type = map(object({
     instance_type         = string
@@ -29,6 +33,11 @@ variable "capacity_providers" {
     ebs_encrypted         = optional(bool, true)
     kms_key_id            = optional(string, null)
     user_data             = optional(string, null)
+    managed_scaling = optional(object({
+      target_capacity           = optional(number, 100)
+      minimum_scaling_step_size = optional(number, 1)
+      maximum_scaling_step_size = optional(number, 1)
+    }), null)
   }))
 }
 

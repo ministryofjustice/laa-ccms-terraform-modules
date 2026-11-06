@@ -35,7 +35,19 @@ resource "aws_ecs_service" "service" {
   cluster         = var.cluster_id
   task_definition = aws_ecs_task_definition.service.arn
   desired_count   = var.desired_count
-  launch_type     = "EC2"
+  launch_type     = length(var.capacity_provider_strategy) > 0 ? null : "EC2"
+
+  # The provider needs a new deployment to move an existing service onto a capacity provider
+  force_new_deployment = length(var.capacity_provider_strategy) > 0
+
+  dynamic "capacity_provider_strategy" {
+    for_each = var.capacity_provider_strategy
+    content {
+      capacity_provider = capacity_provider_strategy.value.capacity_provider
+      weight            = capacity_provider_strategy.value.weight
+      base              = capacity_provider_strategy.value.base
+    }
+  }
 
   # Only meaningful when a load balancer is attached
   health_check_grace_period_seconds = var.load_balancer != null ? var.health_check_grace_period_seconds : null

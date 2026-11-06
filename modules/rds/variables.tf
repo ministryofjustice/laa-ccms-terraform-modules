@@ -89,6 +89,28 @@ variable "deletion_protection" {
   default     = true
 }
 
+variable "snapshot_identifier" {
+  description = "Snapshot to restore from when the instance is created. Null creates an empty database. db_name and username are taken from the snapshot. Changing this on an existing instance replaces it."
+  type        = string
+  default     = null
+}
+
+variable "parameter_group_family" {
+  description = "DB parameter group family (e.g. mysql8.4). Must match engine_version. Required when parameters are specified, otherwise omit."
+  type        = string
+  default     = null
+}
+
+variable "parameters" {
+  description = "Parameters for a custom DB parameter group. Empty uses the engine's default parameter group."
+  type = list(object({
+    name         = string
+    value        = string
+    apply_method = optional(string, "immediate")
+  }))
+  default = []
+}
+
 variable "skip_final_snapshot" {
   description = "Whether to skip the final snapshot on deletion"
   type        = bool

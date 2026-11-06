@@ -35,21 +35,54 @@ resource "aws_db_option_group" "db" {
   })
 }
 
+resource "aws_db_parameter_group" "db" {
+  count = length(var.parameters) > 0 ? 1 : 0
+
+  name_prefix = "${var.name}-pg"
+  family      = var.parameter_group_family
+
+  dynamic "parameter" {
+    for_each = var.parameters
+    content {
+      name         = parameter.value.name
+      value        = parameter.value.value
+      apply_method = parameter.value.apply_method
+    }
+  }
+
+  tags = merge(var.tags, {
+    Name = "${var.name}-pg"
+  })
+
+  lifecycle {
+    create_before_destroy = true
+
+    precondition {
+      condition     = var.parameter_group_family != null
+      error_message = "parameter_group_family must be set when parameters are specified."
+    }
+  }
+}
+
 resource "aws_db_instance" "db" {
   identifier     = var.name
   engine         = var.engine
+  engine_version = var.engine_version
   instance_class = var.instance_class
+
+  # The database name and master username come from the snapshot when restoring
+  snapshot_identifier = var.snapshot_identifier
 
   allocated_storage          = var.allocated_storage
   storage_type               = var.storage_type
   iops                       = var.iops
   auto_minor_version_upgrade = true
 
-  multi_az  = var.multi_az
-  db_name   = var.db_name
-  username  = var.username
-  password  = var.password
-  port      = var.port
+  multi_az = var.multi_az
+  db_name  = var.snapshot_identifier == null ? var.db_name : null
+  username = var.snapshot_identifier == null ? var.username : null
+  password = var.password
+  port     = var.port
 
   kms_key_id        = var.kms_key_id
   storage_encrypted = true
@@ -57,6 +90,7 @@ resource "aws_db_instance" "db" {
   vpc_security_group_ids = var.vpc_security_group_ids
   db_subnet_group_name   = aws_db_subnet_group.db.name
   option_group_name      = length(var.options) > 0 ? aws_db_option_group.db[0].name : null
+  parameter_group_name   = length(var.parameters) > 0 ? aws_db_parameter_group.db[0].name : null
 
   backup_retention_period             = var.backup_retention_period
   maintenance_window                  = var.maintenance_window

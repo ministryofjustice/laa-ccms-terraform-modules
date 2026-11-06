@@ -61,6 +61,16 @@ variable "health_check_grace_period_seconds" {
   default     = 120
 }
 
+variable "capacity_provider_strategy" {
+  description = "Capacity providers to place the service on, in place of the EC2 launch type. Needed for the service to use the cluster's managed scaling."
+  type = list(object({
+    capacity_provider = string
+    weight            = optional(number, 1)
+    base              = optional(number, 0)
+  }))
+  default = []
+}
+
 variable "ordered_placement_strategy" {
   description = "Ordered list of placement strategies for distributing tasks across instances"
   type = list(object({
