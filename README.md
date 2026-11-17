@@ -16,6 +16,7 @@ Reusable Terraform modules for CCMS (Client and Cost Management System) infrastr
 | [efs](modules/efs) | Encrypted EFS file system |
 | [ftp](modules/ftp) | Lambda-based FTP/SFTP file transfer, with optional scheduled (cron) trigger |
 | [nlb](modules/nlb) | Internal Network Load Balancer with TLS listener and target group |
+| [s3-lambda](modules/s3-lambda) | VPC Lambda triggered by uploads to an S3 bucket, with its IAM role, security group, log group and optional error alarm; code deployed outside Terraform |
 | [rds](modules/rds) | RDS database instance with monitoring and event subscriptions |
 | [waf](modules/waf) | WAFv2 web ACL (IP allowlist + managed rules) attached to an ALB |
 
